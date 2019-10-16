@@ -1,7 +1,9 @@
 #####
 ## BUILD
 #####
-CC=riscv64-unknown-linux-gnu-g++
+PREFIX=/opt/riscv64_oslbog
+
+CC=${PREFIX}/riscv64-unknown-linux-gnu-g++
 CFLAGS=-Wall -Wextra -pedantic -Wextra -O0 -g -std=c++17
 CFLAGS+=-static -ffreestanding -nostdlib -fno-rtti -fno-exceptions
 CFLAGS+=-march=rv64gc -mabi=lp64
@@ -17,7 +19,7 @@ OUT=os.elf
 #####
 ## QEMU
 #####
-QEMU=qemu-system-riscv64
+QEMU=${PREFIX}/qemu-system-riscv64
 MACH=virt
 CPU=rv64
 CPUS=4

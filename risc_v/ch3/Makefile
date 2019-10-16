@@ -1,8 +1,10 @@
 #####
 ## BUILD
 #####
-CC=riscv64-unknown-linux-gnu-gcc
-CFLAGS=-Wall -Wextra -pedantic -Wextra -O0 -g
+PREFIX=/opt/riscv64_oslbog
+
+CC=${PREFIX}/riscv64-unknown-linux-gnu-g++
+CFLAGS=-Wall -Wextra -pedantic -Wextra -O0 -g -std=c++17
 CFLAGS+=-static -ffreestanding -nostdlib -fno-rtti -fno-exceptions
 CFLAGS+=-march=rv64gc -mabi=lp64
 INCLUDES=
@@ -17,22 +19,19 @@ OUT=os.elf
 #####
 ## QEMU
 #####
-QEMU=qemu-system-riscv64
+QEMU=${PREFIX}/qemu-system-riscv64
 MACH=virt
 CPU=rv64
 CPUS=4
 MEM=128M
-DISK=hdd.dsk
-# DRIVE= -drive if=none,format=raw,file=$(DISK),id=foo -device virtio-blk-device,scsi=off,drive=foo
-DRIVE=
-
+DRIVE=hdd.dsk
 
 all:
 	cargo build
 	$(CC) $(CFLAGS) $(LINKER_SCRIPT) $(INCLUDES) -o $(OUT) $(SOURCES_ASM) $(LIBS) $(LIB)
 	
 run: all
-	$(QEMU) -machine $(MACH) -cpu $(CPU) -smp $(CPUS) -m $(MEM) $(DRIVE) -nographic -serial mon:stdio -bios none -kernel $(OUT)
+	$(QEMU) -machine $(MACH) -cpu $(CPU) -smp $(CPUS) -m $(MEM)  -nographic -serial mon:stdio -bios none -kernel $(OUT) -drive if=none,format=raw,file=$(DRIVE),id=foo -device virtio-blk-device,scsi=off,drive=foo
 
 
 .PHONY: clean
